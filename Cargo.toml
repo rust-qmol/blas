@@ -1,0 +1,13 @@
+[package]
+name = "blas"
+authors = ["chinder"]
+version = "0.1.0"
+edition = "2021"
+license = "GPL-2.0"
+
+[dependencies]
+core = { path = "../core" }
+
+[build-dependencies]
+cmake = "0.1"
+bindgen = "0.65.1"
