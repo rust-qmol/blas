@@ -10,7 +10,7 @@ macro_rules! vector_ops_raw_impl {
                 self.data
                     .iter_mut()
                     .zip(rhs.data.iter())
-                    .for_each(|(mut a, b)| $bound_assign::$method_assign(a, *b));
+                    .for_each(|(a, b)| $bound_assign::$method_assign(a, *b));
             }
         }
 
