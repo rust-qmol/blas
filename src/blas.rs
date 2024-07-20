@@ -1,5 +1,6 @@
 use libopenblas::__BindgenComplex;
 use core::num::{complex::Complex, float::Float};
+use std::{ffi::c_void, ptr::{addr_of, addr_of_mut}};
 
 mod l1;
 mod l2;
@@ -20,5 +21,13 @@ impl<T: Float> __BindgenComplex<T> {
             re: complex.re,
             im: complex.im,
         }
+    }
+
+    pub(crate) fn as_ptr(&self) -> *const c_void{
+        addr_of!(self) as *const c_void
+    }
+
+    pub(crate) fn as_mut_ptr(mut self: &mut Self) -> *mut c_void{
+        addr_of_mut!(self) as *mut c_void
     }
 }
