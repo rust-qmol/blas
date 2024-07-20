@@ -80,23 +80,38 @@ extern "C" {
 extern "C" {
     pub fn openblas_get_parallel() -> ::std::os::raw::c_int;
 }
-pub const CBLAS_ORDER_CblasRowMajor: CBLAS_ORDER = 101;
-pub const CBLAS_ORDER_CblasColMajor: CBLAS_ORDER = 102;
-pub type CBLAS_ORDER = ::std::os::raw::c_uint;
-pub const CBLAS_TRANSPOSE_CblasNoTrans: CBLAS_TRANSPOSE = 111;
-pub const CBLAS_TRANSPOSE_CblasTrans: CBLAS_TRANSPOSE = 112;
-pub const CBLAS_TRANSPOSE_CblasConjTrans: CBLAS_TRANSPOSE = 113;
-pub const CBLAS_TRANSPOSE_CblasConjNoTrans: CBLAS_TRANSPOSE = 114;
-pub type CBLAS_TRANSPOSE = ::std::os::raw::c_uint;
-pub const CBLAS_UPLO_CblasUpper: CBLAS_UPLO = 121;
-pub const CBLAS_UPLO_CblasLower: CBLAS_UPLO = 122;
-pub type CBLAS_UPLO = ::std::os::raw::c_uint;
-pub const CBLAS_DIAG_CblasNonUnit: CBLAS_DIAG = 131;
-pub const CBLAS_DIAG_CblasUnit: CBLAS_DIAG = 132;
-pub type CBLAS_DIAG = ::std::os::raw::c_uint;
-pub const CBLAS_SIDE_CblasLeft: CBLAS_SIDE = 141;
-pub const CBLAS_SIDE_CblasRight: CBLAS_SIDE = 142;
-pub type CBLAS_SIDE = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum CBLAS_ORDER {
+    CblasRowMajor = 101,
+    CblasColMajor = 102,
+}
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum CBLAS_TRANSPOSE {
+    CblasNoTrans = 111,
+    CblasTrans = 112,
+    CblasConjTrans = 113,
+    CblasConjNoTrans = 114,
+}
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum CBLAS_UPLO {
+    CblasUpper = 121,
+    CblasLower = 122,
+}
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum CBLAS_DIAG {
+    CblasNonUnit = 131,
+    CblasUnit = 132,
+}
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum CBLAS_SIDE {
+    CblasLeft = 141,
+    CblasRight = 142,
+}
 pub use self::CBLAS_ORDER as CBLAS_LAYOUT;
 extern "C" {
     pub fn cblas_sdsdot(

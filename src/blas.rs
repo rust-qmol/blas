@@ -1,12 +1,16 @@
-use libopenblas::__BindgenComplex;
-use core::num::{complex::Complex, float::Float};
-use std::{ffi::c_void, ptr::{addr_of, addr_of_mut}};
+#[allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
+pub(crate) mod libopenblas;
 
 mod l1;
 mod l2;
 mod l3;
 
-pub(crate) mod libopenblas;
+use core::num::{complex::Complex, float::Float};
+use libopenblas::__BindgenComplex;
+use std::{
+    ffi::c_void,
+    ptr::{addr_of, addr_of_mut},
+};
 
 impl<T: Float> __BindgenComplex<T> {
     pub(crate) fn to_complex(&self) -> Complex<T> {
@@ -23,11 +27,11 @@ impl<T: Float> __BindgenComplex<T> {
         }
     }
 
-    pub(crate) fn as_ptr(&self) -> *const c_void{
+    pub(crate) fn as_ptr(&self) -> *const c_void {
         addr_of!(self) as *const c_void
     }
 
-    pub(crate) fn as_mut_ptr(mut self: &mut Self) -> *mut c_void{
+    pub(crate) fn as_mut_ptr(mut self: &mut Self) -> *mut c_void {
         addr_of_mut!(self) as *mut c_void
     }
 }

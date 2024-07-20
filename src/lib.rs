@@ -1,4 +1,4 @@
-#![allow(bad_style)]
+#![feature(trait_alias)]
 
 mod blas;
 pub mod matrix;

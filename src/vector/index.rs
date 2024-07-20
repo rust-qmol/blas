@@ -1,5 +1,6 @@
-use core::num::Num;
 use std::ops::{Index, IndexMut};
+
+use core::num::Num;
 
 use super::Vector;
 

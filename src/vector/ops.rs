@@ -1,11 +1,12 @@
-use core::num::Num;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
+
+use core::num::Num;
 
 use super::Vector;
 
 macro_rules! vector_ops_raw_impl {
-    ($vec_name:ident, $bound_assign:ident, $method_assign:ident, $bound:ident, $method:ident) => {
-        impl<T: Num> $bound_assign for $vec_name<T> {
+    ($bound_assign:ident, $method_assign:ident, $bound:ident, $method:ident) => {
+        impl<T: Num> $bound_assign for Vector<T> {
             fn $method_assign(&mut self, rhs: Self) {
                 self.data
                     .iter_mut()
@@ -14,7 +15,7 @@ macro_rules! vector_ops_raw_impl {
             }
         }
 
-        impl<T: Num> $bound for $vec_name<T> {
+        impl<T: Num> $bound for Vector<T> {
             type Output = Self;
             fn $method(self, rhs: Self) -> Self {
                 let mut r = self;
@@ -25,10 +26,10 @@ macro_rules! vector_ops_raw_impl {
     };
 }
 
-vector_ops_raw_impl!(Vector, AddAssign, add_assign, Add, add);
-vector_ops_raw_impl!(Vector, SubAssign, sub_assign, Sub, sub);
-vector_ops_raw_impl!(Vector, MulAssign, mul_assign, Mul, mul);
-vector_ops_raw_impl!(Vector, DivAssign, div_assign, Div, div);
+vector_ops_raw_impl!(AddAssign, add_assign, Add, add);
+vector_ops_raw_impl!(SubAssign, sub_assign, Sub, sub);
+vector_ops_raw_impl!(MulAssign, mul_assign, Mul, mul);
+vector_ops_raw_impl!(DivAssign, div_assign, Div, div);
 
 impl<T: Num> Neg for Vector<T> {
     type Output = Vector<T>;

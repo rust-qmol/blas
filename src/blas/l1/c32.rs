@@ -2,8 +2,9 @@ use core::num::complex::Complex;
 
 use crate::{
     blas::libopenblas::{
-        __BindgenComplex, cblas_cdotc_sub, cblas_cscal, cblas_cdotu_sub, cblas_crotg, cblas_csrot, cblas_icamax,
-        cblas_icamin, cblas_scasum, cblas_scnrm2, cblas_caxpy, cblas_ccopy, cblas_cswap,
+        __BindgenComplex, cblas_caxpy, cblas_ccopy, cblas_cdotc_sub, cblas_cdotu_sub, cblas_crotg,
+        cblas_cscal, cblas_csrot, cblas_cswap, cblas_icamax, cblas_icamin, cblas_scasum,
+        cblas_scnrm2,
     },
     vector::Vector,
 };
@@ -113,7 +114,14 @@ impl Vector<Complex<f32>> {
     }
     pub fn scal(&mut self, alpha: Complex<f32>) -> &mut Self {
         let alpha_bind = __BindgenComplex::from_complex(alpha);
-        unsafe { cblas_cscal(self.blas_len(), alpha_bind.as_ptr(), self.as_mut_void_ptr(), 0) };
+        unsafe {
+            cblas_cscal(
+                self.blas_len(),
+                alpha_bind.as_ptr(),
+                self.as_mut_void_ptr(),
+                0,
+            )
+        };
         self
     }
     pub fn iamax(&self) -> usize {

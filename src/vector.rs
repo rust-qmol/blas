@@ -1,8 +1,9 @@
 mod index;
 mod ops;
 
-use core::num::Num;
 use std::ffi::c_void;
+
+use core::num::Num;
 
 use crate::blas::libopenblas::blasint;
 
@@ -25,19 +26,19 @@ impl<T: Num> Vector<T> {
         self.data.len() as blasint
     }
 
-    pub(crate) fn as_ptr(&self) -> *const T{
+    pub(crate) fn as_ptr(&self) -> *const T {
         self.data.as_ptr()
     }
 
-    pub(crate) fn as_mut_ptr(&mut self) -> *mut T{
+    pub(crate) fn as_mut_ptr(&mut self) -> *mut T {
         self.data.as_mut_ptr()
     }
 
-    pub(crate) fn as_void_ptr(&self) -> *const c_void{
+    pub(crate) fn as_void_ptr(&self) -> *const c_void {
         self.data.as_ptr() as *const c_void
     }
 
-    pub(crate) fn as_mut_void_ptr(&mut self) -> *mut c_void{
+    pub(crate) fn as_mut_void_ptr(&mut self) -> *mut c_void {
         self.data.as_mut_ptr() as *mut c_void
     }
 }
