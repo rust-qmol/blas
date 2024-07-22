@@ -22,16 +22,16 @@ macro_rules! ptr_raw_impl {
                 self.col as blasint
             }
 
-            pub(crate) fn as_ptr(&self) -> *const T {
+            pub(crate) unsafe fn as_ptr(self) -> *const T {
                 self.data.as_ptr()
             }
-            pub(crate) fn as_mut_ptr(&mut self) -> *mut T {
+            pub(crate) unsafe fn as_mut_ptr(mut self) -> *mut T {
                 self.data.as_mut_ptr() as *mut T
             }
-            pub(crate) fn as_void_ptr(&self) -> *const c_void {
+            pub(crate) unsafe fn as_void_ptr(self) -> *const c_void {
                 addr_of!(self.data) as *const c_void
             }
-            pub(crate) fn as_mut_void_ptr(&mut self) -> *mut c_void {
+            pub(crate) unsafe fn as_mut_void_ptr(mut self) -> *mut c_void {
                 addr_of_mut!(self.data) as *mut c_void
             }
         }

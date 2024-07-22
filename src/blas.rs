@@ -1,9 +1,11 @@
 #[allow(non_snake_case, non_upper_case_globals, non_camel_case_types)]
 pub(crate) mod libopenblas;
 
-mod l1;
+pub mod l1;
 mod l2;
 mod l3;
+
+mod raw;
 
 use core::num::{complex::Complex, float::Float};
 use libopenblas::__BindgenComplex;
@@ -27,11 +29,11 @@ impl<T: Float> __BindgenComplex<T> {
         }
     }
 
-    pub(crate) fn as_ptr(&self) -> *const c_void {
+    pub(crate) unsafe fn as_ptr(self) -> *const c_void {
         addr_of!(self) as *const c_void
     }
 
-    pub(crate) fn as_mut_ptr(mut self: &mut Self) -> *mut c_void {
+    pub(crate) unsafe fn as_mut_ptr(mut self) -> *mut c_void {
         addr_of_mut!(self) as *mut c_void
     }
 }

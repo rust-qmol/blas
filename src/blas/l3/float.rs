@@ -1,6 +1,6 @@
 use crate::matrix::mtype::{Lower, Upper};
 use crate::{
-    blas::libopenblas::{blasint, cblas_dgemm, cblas_sgemm, CBLAS_LAYOUT},
+    blas::libopenblas::{cblas_dgemm, cblas_sgemm, CBLAS_LAYOUT},
     matrix::{
         mtype::{ColMajor, Full, RowMajor},
         Matrix,
@@ -10,7 +10,7 @@ use crate::{
 macro_rules! mm_raw_impl {
     ($layout_enum: ident, $layout_expr: expr, $uplo_enum: ident, $method: ident, $t: ident) => {
         impl Matrix<$t, Full, $layout_enum, $uplo_enum> {
-            pub fn mm(alpha: $t, a: Self, b: Self, beta: $t, mut c: Self) {
+            pub fn mm(alpha: $t, a: Self, b: Self, beta: $t, c: Self) {
                 unsafe {
                     $method(
                         $layout_expr,

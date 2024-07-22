@@ -14,7 +14,7 @@ use core::num::complex::Complex;
 macro_rules! mm_raw_impl {
     ($layout_enum: ident, $layout_expr: expr, $uplo_enum: ident, $method: ident, $t: ident) => {
         impl Matrix<Complex<$t>, Full, $layout_enum, $uplo_enum> {
-            pub fn mm(alpha: Complex<$t>, a: Self, b: Self, beta: Complex<$t>, mut c: Self) {
+            pub fn mm(alpha: Complex<$t>, a: Self, b: Self, beta: Complex<$t>, c: Self) {
                 let alpha_bind = __BindgenComplex::from_complex(alpha);
                 let beta_bind = __BindgenComplex::from_complex(beta);
                 unsafe {
