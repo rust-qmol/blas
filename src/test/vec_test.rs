@@ -1,7 +1,7 @@
 #[test]
 fn vector_f32_test() {
+    use crate::blas::l1::{BlasLevel1, BlasLevel1Float};
     use crate::vector::Vector;
-    use crate::blas::l1::{BlasLeve1, BlasLeve1Float};
     let v1 = Vector::<f32>::from_vec(vec![0.1, 0.2, 0.3, 0.4, 0.5]);
     println!("v1: {:?}", v1);
     let v2 = Vector::<f32>::from_vec(vec![0.9, 0.8, 0.7, 0.6, 0.5]);
@@ -28,9 +28,9 @@ fn vector_f32_test() {
 
 #[test]
 fn vector_c32_test() {
+    use crate::blas::l1::{BlasLevel1, BlasLevel1Complex};
     use crate::vector::Vector;
     use core::num::{complex::Complex, zero::Zero};
-    use crate::blas::l1::{BlasLeve1, BlasLeve1Complex};
     let v1 = Vector::<Complex<f32>>::from_vec(vec![
         Complex { re: 0.1, im: 0.2 },
         Complex { re: 0.3, im: 0.4 },

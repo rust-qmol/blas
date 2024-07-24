@@ -7,105 +7,105 @@ use std::ffi::c_void;
 
 use crate::blas::libopenblas::blasint;
 
-pub trait BlasLeve1Raw {
-    type Point;
-    type Float;
+pub trait BlasLevel1Raw {
+    type Pointer;
+    type Coeff;
     type EleInput;
 
-    unsafe fn as_ptr(&self) -> *const Self::Point;
-    unsafe fn as_mut_ptr(&mut self) -> *mut Self::Point;
+    unsafe fn as_ptr(&self) -> *const Self::Pointer;
+    unsafe fn as_mut_ptr(&mut self) -> *mut Self::Pointer;
 
-    unsafe fn asum(n: blasint, x: *const Self::Point, incx: blasint) -> Self::Float;
+    unsafe fn asum(n: blasint, x: *const Self::Pointer, incx: blasint) -> Self::Coeff;
     unsafe fn axpy(
         n: blasint,
         alpha: Self::EleInput,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         incy: blasint,
     );
     unsafe fn copy(
         n: blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         incy: blasint,
     );
-    unsafe fn nrm2(n: blasint, x: *const Self::Point, inc_x: blasint) -> Self::Float;
+    unsafe fn nrm2(n: blasint, x: *const Self::Pointer, inc_x: blasint) -> Self::Coeff;
     unsafe fn rot(
         n: blasint,
-        x: *mut Self::Point,
+        x: *mut Self::Pointer,
         inc_x: blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         inc_y: blasint,
-        c: Self::Float,
-        s: Self::Float,
+        c: Self::Coeff,
+        s: Self::Coeff,
     );
     unsafe fn rotg(
-        a: *mut Self::Point,
-        b: *mut Self::Point,
-        c: *mut Self::Float,
-        s: *mut Self::Point,
+        a: *mut Self::Pointer,
+        b: *mut Self::Pointer,
+        c: *mut Self::Coeff,
+        s: *mut Self::Pointer,
     );
-    unsafe fn scal(n: blasint, alpha: Self::EleInput, x: *mut Self::Point, inc_x: blasint);
+    unsafe fn scal(n: blasint, alpha: Self::EleInput, x: *mut Self::Pointer, inc_x: blasint);
     unsafe fn swap(
         n: blasint,
-        x: *mut Self::Point,
+        x: *mut Self::Pointer,
         incx: blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         incy: blasint,
     );
-    unsafe fn amax_index(n: blasint, x: *const Self::Point, incx: blasint) -> usize;
-    unsafe fn amin_index(n: blasint, x: *const Self::Point, incx: blasint) -> usize;
+    unsafe fn amax_index(n: blasint, x: *const Self::Pointer, incx: blasint) -> usize;
+    unsafe fn amin_index(n: blasint, x: *const Self::Pointer, incx: blasint) -> usize;
 }
 
-pub trait BlasLeve1FloatRaw
+pub trait BlasLevel1FloatRaw
 where
-    Self: BlasLeve1Raw,
+    Self: BlasLevel1Raw,
 {
     unsafe fn dot(
         n: blasint,
-        x: *const <Self as BlasLeve1Raw>::Point,
+        x: *const <Self as BlasLevel1Raw>::Pointer,
         incx: blasint,
-        y: *const <Self as BlasLeve1Raw>::Point,
+        y: *const <Self as BlasLevel1Raw>::Pointer,
         incy: blasint,
-    ) -> <Self as BlasLeve1Raw>::Float;
+    ) -> <Self as BlasLevel1Raw>::Coeff;
     unsafe fn rotm(
         n: blasint,
-        x: *mut Self::Point,
+        x: *mut Self::Pointer,
         inc_x: blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         inc_y: blasint,
-        p: *const Self::Point,
+        p: *const Self::Pointer,
     );
     unsafe fn rotmg(
-        d1: *mut Self::Point,
-        d2: *mut Self::Point,
-        b1: *mut Self::Point,
+        d1: *mut Self::Pointer,
+        d2: *mut Self::Pointer,
+        b1: *mut Self::Pointer,
         b2: Self,
-        p: *mut Self::Point,
+        p: *mut Self::Pointer,
     );
 }
 
-pub trait BlasLeve1ComplexRaw
+pub trait BlasLevel1ComplexRaw
 where
     Self: Sized,
-    Self: BlasLeve1Raw<Point = c_void>,
+    Self: BlasLevel1Raw<Pointer = c_void>,
 {
     unsafe fn dotc_sub(
         n: blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: blasint,
-        y: *const Self::Point,
+        y: *const Self::Pointer,
         incy: blasint,
-        ret: *mut Self::Point,
+        ret: *mut Self::Pointer,
     );
     unsafe fn dotu_sub(
         n: blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: blasint,
-        y: *const Self::Point,
+        y: *const Self::Pointer,
         incy: blasint,
-        ret: *mut Self::Point,
+        ret: *mut Self::Pointer,
     );
 }

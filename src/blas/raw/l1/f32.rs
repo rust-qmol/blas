@@ -3,35 +3,35 @@ use crate::blas::libopenblas::{
     cblas_snrm2, cblas_srot, cblas_srotg, cblas_srotm, cblas_srotmg, cblas_sscal, cblas_sswap,
 };
 
-use super::{BlasLeve1FloatRaw, BlasLeve1Raw};
+use super::{BlasLevel1FloatRaw, BlasLevel1Raw};
 
-impl BlasLeve1Raw for f32 {
-    type Point = f32;
-    type Float = f32;
-    type EleInput = Self::Float;
+impl BlasLevel1Raw for f32 {
+    type Pointer = f32;
+    type Coeff = f32;
+    type EleInput = Self::Coeff;
 
-    unsafe fn as_ptr(&self) -> *const Self::Point {
+    unsafe fn as_ptr(&self) -> *const Self::Pointer {
         self
     }
 
-    unsafe fn as_mut_ptr(&mut self) -> *mut Self::Point {
+    unsafe fn as_mut_ptr(&mut self) -> *mut Self::Pointer {
         self
     }
 
     unsafe fn asum(
         n: crate::blas::libopenblas::blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: crate::blas::libopenblas::blasint,
-    ) -> Self::Float {
+    ) -> Self::Coeff {
         cblas_sasum(n, x, incx)
     }
 
     unsafe fn axpy(
         n: blasint,
         alpha: Self::EleInput,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         incy: blasint,
     ) {
         cblas_saxpy(n, alpha, x, incx, y, incy)
@@ -39,9 +39,9 @@ impl BlasLeve1Raw for f32 {
 
     unsafe fn copy(
         n: crate::blas::libopenblas::blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: crate::blas::libopenblas::blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         incy: crate::blas::libopenblas::blasint,
     ) {
         cblas_scopy(n, x, incx, y, incy)
@@ -49,29 +49,29 @@ impl BlasLeve1Raw for f32 {
 
     unsafe fn nrm2(
         n: crate::blas::libopenblas::blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         inc_x: crate::blas::libopenblas::blasint,
-    ) -> Self::Float {
+    ) -> Self::Coeff {
         cblas_snrm2(n, x, inc_x)
     }
 
     unsafe fn rot(
         n: crate::blas::libopenblas::blasint,
-        x: *mut Self::Point,
+        x: *mut Self::Pointer,
         inc_x: crate::blas::libopenblas::blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         inc_y: crate::blas::libopenblas::blasint,
-        c: Self::Float,
-        s: Self::Float,
+        c: Self::Coeff,
+        s: Self::Coeff,
     ) {
         cblas_srot(n, x, inc_x, y, inc_y, c, s)
     }
 
     unsafe fn rotg(
-        a: *mut Self::Point,
-        b: *mut Self::Point,
-        c: *mut Self::Float,
-        s: *mut Self::Point,
+        a: *mut Self::Pointer,
+        b: *mut Self::Pointer,
+        c: *mut Self::Pointer,
+        s: *mut Self::Pointer,
     ) {
         cblas_srotg(a, b, c, s)
     }
@@ -79,7 +79,7 @@ impl BlasLeve1Raw for f32 {
     unsafe fn scal(
         n: crate::blas::libopenblas::blasint,
         alpha: Self::EleInput,
-        x: *mut Self::Point,
+        x: *mut Self::Pointer,
         inc_x: crate::blas::libopenblas::blasint,
     ) {
         cblas_sscal(n, alpha, x, inc_x)
@@ -87,9 +87,9 @@ impl BlasLeve1Raw for f32 {
 
     unsafe fn swap(
         n: crate::blas::libopenblas::blasint,
-        x: *mut Self::Point,
+        x: *mut Self::Pointer,
         incx: crate::blas::libopenblas::blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         incy: crate::blas::libopenblas::blasint,
     ) {
         cblas_sswap(n, x, incx, y, incy)
@@ -97,7 +97,7 @@ impl BlasLeve1Raw for f32 {
 
     unsafe fn amax_index(
         n: crate::blas::libopenblas::blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: crate::blas::libopenblas::blasint,
     ) -> usize {
         cblas_isamax(n, x, incx)
@@ -105,41 +105,41 @@ impl BlasLeve1Raw for f32 {
 
     unsafe fn amin_index(
         n: crate::blas::libopenblas::blasint,
-        x: *const Self::Point,
+        x: *const Self::Pointer,
         incx: crate::blas::libopenblas::blasint,
     ) -> usize {
         cblas_isamin(n, x, incx)
     }
 }
 
-impl BlasLeve1FloatRaw for f32 {
+impl BlasLevel1FloatRaw for f32 {
     unsafe fn dot(
         n: blasint,
-        x: *const Self::Float,
+        x: *const Self::Coeff,
         incx: blasint,
-        y: *const Self::Float,
+        y: *const Self::Coeff,
         incy: blasint,
-    ) -> Self::Float {
+    ) -> Self::Coeff {
         cblas_sdot(n, x, incx, y, incy)
     }
 
     unsafe fn rotm(
         n: blasint,
-        x: *mut Self::Point,
+        x: *mut Self::Pointer,
         inc_x: blasint,
-        y: *mut Self::Point,
+        y: *mut Self::Pointer,
         inc_y: blasint,
-        p: *const Self::Point,
+        p: *const Self::Pointer,
     ) {
         cblas_srotm(n, x, inc_x, y, inc_y, p)
     }
 
     unsafe fn rotmg(
-        d1: *mut Self::Point,
-        d2: *mut Self::Point,
-        b1: *mut Self::Point,
-        b2: Self::Point,
-        p: *mut Self::Point,
+        d1: *mut Self::Pointer,
+        d2: *mut Self::Pointer,
+        b1: *mut Self::Pointer,
+        b2: Self::Pointer,
+        p: *mut Self::Pointer,
     ) {
         cblas_srotmg(d1, d2, b1, b2, p)
     }

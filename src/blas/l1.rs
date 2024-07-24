@@ -1,24 +1,22 @@
+use super::{
+    libopenblas::blasint,
+    raw::l1::{BlasLevel1ComplexRaw, BlasLevel1FloatRaw, BlasLevel1Raw},
+};
+use crate::vector::Vector;
 use core::num::complex::Complex;
 use std::ffi::c_void;
 
-use crate::vector::Vector;
-
-use super::{
-    libopenblas::blasint,
-    raw::l1::{BlasLeve1ComplexRaw, BlasLeve1FloatRaw, BlasLeve1Raw},
-};
-
-pub trait BlasLeve1
+pub trait BlasLevel1
 where
     Self: Clone,
 {
-    type Ele: BlasLeve1Raw;
-    type Point = <Self::Ele as BlasLeve1Raw>::Point;
-    type Float = <Self::Ele as BlasLeve1Raw>::Float;
+    type Ele: BlasLevel1Raw;
+    type Pointer = <Self::Ele as BlasLevel1Raw>::Pointer;
+    type Coeff = <Self::Ele as BlasLevel1Raw>::Coeff;
 
     fn blas_len(&self) -> blasint;
-    fn as_ptr(&self) -> *const <Self::Ele as BlasLeve1Raw>::Point;
-    fn as_mut_ptr(&mut self) -> *mut <Self::Ele as BlasLeve1Raw>::Point;
+    fn as_ptr(&self) -> *const <Self::Ele as BlasLevel1Raw>::Pointer;
+    fn as_mut_ptr(&mut self) -> *mut <Self::Ele as BlasLevel1Raw>::Pointer;
 
     fn swap(mut x: Self, mut y: Self) -> (Self, Self) {
         unsafe { Self::Ele::swap(x.blas_len(), x.as_mut_ptr(), 1, y.as_mut_ptr(), 1) }
@@ -28,8 +26,8 @@ where
     fn rot(
         mut x: Self,
         mut y: Self,
-        c: <Self::Ele as BlasLeve1Raw>::Float,
-        s: <Self::Ele as BlasLeve1Raw>::Float,
+        c: <Self::Ele as BlasLevel1Raw>::Coeff,
+        s: <Self::Ele as BlasLevel1Raw>::Coeff,
     ) -> (Self, Self) {
         unsafe { Self::Ele::rot(x.blas_len(), x.as_mut_ptr(), 1, y.as_mut_ptr(), 1, c, s) }
         (x, y)
@@ -37,22 +35,22 @@ where
     fn rotg(
         mut a: Self::Ele,
         mut b: Self::Ele,
-        mut c: <Self::Ele as BlasLeve1Raw>::Float,
+        mut c: <Self::Ele as BlasLevel1Raw>::Coeff,
         mut s: Self::Ele,
     ) -> (
         Self::Ele,
         Self::Ele,
-        <Self::Ele as BlasLeve1Raw>::Float,
+        <Self::Ele as BlasLevel1Raw>::Coeff,
         Self::Ele,
     ) {
         unsafe { Self::Ele::rotg(a.as_mut_ptr(), b.as_mut_ptr(), &mut c, s.as_mut_ptr()) };
         (a, b, c, s)
     }
 
-    fn asum(&self) -> <Self::Ele as BlasLeve1Raw>::Float {
+    fn asum(&self) -> <Self::Ele as BlasLevel1Raw>::Coeff {
         unsafe { Self::Ele::asum(self.blas_len(), self.as_ptr(), 1) }
     }
-    fn axpy(&mut self, alpha: <Self::Ele as BlasLeve1Raw>::EleInput, rhs: Self) -> &mut Self {
+    fn axpy(&mut self, alpha: <Self::Ele as BlasLevel1Raw>::EleInput, rhs: Self) -> &mut Self {
         unsafe {
             Self::Ele::axpy(
                 self.blas_len(),
@@ -68,10 +66,10 @@ where
     fn copy(&self, rhs: &mut Self) {
         unsafe { Self::Ele::copy(self.blas_len(), self.as_ptr(), 1, rhs.as_mut_ptr(), 1) }
     }
-    fn nrm2(&self) -> <Self::Ele as BlasLeve1Raw>::Float {
+    fn nrm2(&self) -> <Self::Ele as BlasLevel1Raw>::Coeff {
         unsafe { Self::Ele::nrm2(self.blas_len(), self.as_ptr(), 1) }
     }
-    fn scal(&mut self, alpha: <Self::Ele as BlasLeve1Raw>::EleInput) -> &mut Self {
+    fn scal(&mut self, alpha: <Self::Ele as BlasLevel1Raw>::EleInput) -> &mut Self {
         unsafe { Self::Ele::scal(self.blas_len(), alpha, self.as_mut_ptr(), 1) };
         self
     }
@@ -83,11 +81,11 @@ where
     }
 }
 
-pub trait BlasLeve1Float<Ele: BlasLeve1FloatRaw<Point = Ele>>
+pub trait BlasLevel1Float<Ele: BlasLevel1FloatRaw<Pointer = Ele>>
 where
-    Self: BlasLeve1<Ele = Ele>,
+    Self: BlasLevel1<Ele = Ele>,
 {
-    fn dot(&self, rhs: Self) -> <Ele as BlasLeve1Raw>::Float {
+    fn dot(&self, rhs: Self) -> <Ele as BlasLevel1Raw>::Coeff {
         unsafe { Ele::dot(self.blas_len(), self.as_ptr(), 1, rhs.as_ptr(), 1) }
     }
     fn rotm(mut x: Self, mut y: Self, param: [Ele; 5]) -> (Self, Self) {
@@ -123,9 +121,9 @@ where
     }
 }
 
-pub trait BlasLeve1Complex<Ele: BlasLeve1ComplexRaw>
+pub trait BlasLevel1Complex<Ele: BlasLevel1ComplexRaw>
 where
-    Self: BlasLeve1<Ele = Ele>,
+    Self: BlasLevel1<Ele = Ele>,
 {
     fn dotc_sub(x: Self, y: Self, mut ret: Ele) -> Ele {
         unsafe {
@@ -143,27 +141,27 @@ where
 
 macro_rules! vector_float_leve1_impl {
     ($t: ident) => {
-        impl BlasLeve1 for Vector<$t> {
+        impl BlasLevel1 for Vector<$t> {
             type Ele = $t;
 
-            type Point = <Self::Ele as BlasLeve1Raw>::Point;
+            type Pointer = <Self::Ele as BlasLevel1Raw>::Pointer;
 
-            type Float = <Self::Ele as BlasLeve1Raw>::Float;
+            type Coeff = <Self::Ele as BlasLevel1Raw>::Coeff;
 
             fn blas_len(&self) -> blasint {
                 self.data.len() as blasint
             }
 
-            fn as_ptr(&self) -> *const <Self::Ele as BlasLeve1Raw>::Point {
+            fn as_ptr(&self) -> *const <Self::Ele as BlasLevel1Raw>::Pointer {
                 self.data.as_ptr()
             }
 
-            fn as_mut_ptr(&mut self) -> *mut <Self::Ele as BlasLeve1Raw>::Point {
+            fn as_mut_ptr(&mut self) -> *mut <Self::Ele as BlasLevel1Raw>::Pointer {
                 self.data.as_mut_ptr()
             }
         }
 
-        impl BlasLeve1Float<$t> for Vector<$t> {}
+        impl BlasLevel1Float<$t> for Vector<$t> {}
     };
 }
 
@@ -172,27 +170,27 @@ vector_float_leve1_impl!(f64);
 
 macro_rules! vector_complex_leve1_impl {
     ($t: ident) => {
-        impl BlasLeve1 for Vector<Complex<$t>> {
+        impl BlasLevel1 for Vector<Complex<$t>> {
             type Ele = Complex<$t>;
 
-            type Point = <Self::Ele as BlasLeve1Raw>::Point;
+            type Pointer = <Self::Ele as BlasLevel1Raw>::Pointer;
 
-            type Float = <Self::Ele as BlasLeve1Raw>::Float;
+            type Coeff = <Self::Ele as BlasLevel1Raw>::Coeff;
 
             fn blas_len(&self) -> blasint {
                 self.data.len() as blasint
             }
 
-            fn as_ptr(&self) -> *const <Self::Ele as BlasLeve1Raw>::Point {
+            fn as_ptr(&self) -> *const <Self::Ele as BlasLevel1Raw>::Pointer {
                 self.data.as_ptr() as *const c_void
             }
 
-            fn as_mut_ptr(&mut self) -> *mut <Self::Ele as BlasLeve1Raw>::Point {
+            fn as_mut_ptr(&mut self) -> *mut <Self::Ele as BlasLevel1Raw>::Pointer {
                 self.data.as_mut_ptr() as *mut c_void
             }
         }
 
-        impl BlasLeve1Complex<Complex<$t>> for Vector<Complex<$t>> {}
+        impl BlasLevel1Complex<Complex<$t>> for Vector<Complex<$t>> {}
     };
 }
 

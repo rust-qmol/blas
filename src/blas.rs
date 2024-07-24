@@ -2,7 +2,6 @@
 pub(crate) mod libopenblas;
 
 pub mod l1;
-mod l2;
 mod l3;
 
 mod raw;
